@@ -1,3 +1,10 @@
+InitPlayer:
+	LDA #$80
+	STA player_x
+	STA player_y
+	
+	RTS
+
 UpdatePlayer:
 	LDA buttons1
 	AND #%10000000

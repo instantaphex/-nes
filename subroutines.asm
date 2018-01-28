@@ -9,3 +9,6 @@ DMACopy:
   LDA #$02
   STA $4014  ; set the high byte (02) of the RAM address, start the transfer
 	RTS
+
+Update:
+	RTS
