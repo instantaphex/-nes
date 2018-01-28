@@ -11,8 +11,8 @@ buttons2 .rs 1 ; conroller variable for player 1
 player_x .rs 1 ; player x position
 player_y .rs 1 ; player y position
 
-bg_ptr_hi .rs 1 ; bg pointer high byte
 bg_ptr_low .rs 1 ; bg pointer low byte
+bg_ptr_hi .rs 1 ; bg pointer high byte
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -31,10 +31,7 @@ RESET:
   STX $2001    ; disable rendering
   STX $4010    ; disable DMC IRQs
 
-vblankwait1:       ; First wait for vblank to make sure PPU is ready
-  BIT $2002
-  BPL vblankwait1
-
+	JSR vblankwait ; wait for vblank to make sure PPU is ready
 clrmem:
   LDA #$00
   STA $0000, x
@@ -49,91 +46,17 @@ clrmem:
   INX
   BNE clrmem
    
-vblankwait2:      ; Second wait for vblank, PPU is ready after this
-  BIT $2002
-  BPL vblankwait2
+	JSR vblankwait ; PPU is ready after this vblank wait
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Load Assets
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LoadPalettes:
-  LDA $2002    ; read PPU status to reset the high/low latch
-  LDA #$3F
-  STA $2006    ; write the high byte of $3F00 address
-  LDA #$00
-  STA $2006    ; write the low byte of $3F00 address
-  LDX #$00
-LoadPalettesLoop:
-  LDA palette, x        ;load palette byte
-  STA $2007             ;write to PPU
-  INX                   ;set index to next byte
-  CPX #$20            
-  BNE LoadPalettesLoop  ;if x = $20, 32 bytes copied, all done
-
-LoadSprites:
-	LDX #$00			;init sentinel to 0
-LoadSpritesLoop:
-	LDA sprites, x
-	STA $200, x	;store into ram address ($200 + x)
-	INX						;x++
-	CPX #$10			;if (x != $04) 
-	BNE LoadSpritesLoop
-
-;LoadBackground:
-;	LDA $2002		; read ppu status to reset high/low latch
-;	LDA #$20 
-;	STA $2006   ; write the high byte of $2000
-;	LDA #$00
-;	STA $2006   ; write the low byte of $2000
-;	LDX #$00    ; start counting at 0
-;LoadBackgroundLoop:
-;	LDA background, x   ; load data from background (background + x value)
-;	STA $2007						; write to ppu
-;	INX									; x += 1
-;	CPX #$80						; $80 = 128 decimal.  We're reading 128 bytes
-;	BNE LoadBackgroundLoop
-
-;LoadAttributes:
-;	LDA $2002    ; reset high/low latch
-;	LDA #$23		 ; high byte
-;	STA $2007			; write high byte
-;	LDA #$C0		 ; low byte
-;	STA $2007			; write low byte
-;	LDX #$00	   ; start counting from 0
-;LoadAttributesLoop:
-;	LDA attribute, x   ; load data from background (background + x value)
-;	STA $2007						; write to ppu
-;	INX									; x += 1
-;	CPX #$80						; $80 = 128 decimal.  We're reading 128 bytes
-;	BNE LoadAttributesLoop
-
-LoadBackground:
-	LDA $2002				; reset high/low latch
-	LDA #$20
-	STA $2006				; write high byte
-	LDA #$00
-	STA $2006				; write low byte
-
-	; set up pointer to bg
-	LDA #LOW(background) ; #$00
-	STA bg_ptr_low  ; put low byte of bg into pointer
-	LDA #HIGH(background)
-	STA bg_ptr_hi   ; put high byte into pointer
-
-	LDX #$04
-	LDY #$00
-LoadBackgroundLoop:
-	LDA [bg_ptr_low], y	; one byte from address + y
-	STA $2007
-	INY									; increment inner loop counter
-	BNE LoadBackgroundLoop 
-	INC bg_ptr_hi
-  DEX	
-	BNE LoadBackgroundLoop
+	JSR LoadPalettes
+	JSR LoadSprites
+	JSR LoadBackground
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Housekeeping
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	JSR vblankwait   ; wait for vblank to enable rendering to keep from seeing glitchy graphics
+
 	LDA #%10010000   ; enable NMI, sprites from Pattern Table 0, background from Pattern Table 1
   STA $2000
 
@@ -155,8 +78,11 @@ Forever:
 ; VBlank Code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 NMI:
-	JSR DMADraw
+	JSR DMACopy
+
 	JSR ReadController1
+	JSR ReadController1
+
 	JSR UpdatePlayer 
 
   RTI
@@ -165,6 +91,9 @@ NMI:
 ; Subroutines
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  .include "subroutines.asm"
+ .include "load-assets.asm"
+ .include "update-player.asm"
+ .include "read-controllers.asm"
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
   .bank 1

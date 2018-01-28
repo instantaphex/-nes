@@ -1,50 +1,61 @@
-LatchButtons:
-	LDA #$01
-	STA $4016
-	LDA #$00
-	STA $4016
+UpdatePlayer:
+	LDA buttons1
+	AND #%10000000
+	BNE PlayerAPressed
 
-ReadA:
-	LDA $4016
-	AND #%00000001
-	BEQ ReadADone ; if a ins't pressed, skip the rest
+	LDA buttons1
+	AND #%01000000
+	BNE PlayerBPressed
 	
-	; A button logic
+	LDA buttons1
+	AND #%00100000
+	BNE PlayerStartPressed
 
-ReadADone:
+	LDA buttons1
+	AND #%00010000
+	BNE PlayerSelectPressed
 
-ReadB:
-	LDA $4016
+	LDA buttons1
+	AND #%00001000
+	BNE PlayerUpPressed
+
+	LDA buttons1
+	AND #%00000100
+	BNE PlayerDownPressed
+
+	LDA buttons1
+	AND #%00000010
+	BNE PlayerLeftPressed
+
+	LDA buttons1
 	AND #%00000001
-	BEQ ReadBDone
+	BNE PlayerRightPressed
 
-	; b button logic
+	RTS	
 
-ReadBDone:
+PlayerAPressed:
+	lda #%00000001
+  sta $4015 ;enable square 1
 
-ReadSelect:
-	LDA $4016
-	AND #%00000001
-	BEQ ReadSelectDone
-	
-	; select logic
+  lda #%10111111 ;Duty 10, Volume F
+  sta $4000
 
-ReadSelectDone:
+  lda #$C9    ;0C9 is a C# in NTSC mode
+  sta $4002
+  lda #$00
+  sta $4003
+	RTS
 
-ReadStart:
-	LDA $4016
-	AND #%00000001
-	BEQ ReadStartDone
-	
-	; start logic
+PlayerBPressed:
+	RTS
 
-ReadStartDone:
+PlayerStartPressed:
+	RTS
 
-ReadUp:
-	LDA $4016
-	AND #%00000001
-	BEQ ReadUpDone
+PlayerSelectPressed:
+	RTS
 
+PlayerUpPressed:
 	LDX #$00
 MoveUpLoop:
 	LDA $0200, x ; get sprite 1 y pos
@@ -57,14 +68,9 @@ MoveUpLoop:
 	INX
 	CPX #$10
 	BNE MoveUpLoop
+	RTS
 
-ReadUpDone:
-
-ReadDown:
-	LDA $4016
-	AND #%00000001
-	BEQ ReadDownDone
-
+PlayerDownPressed:
 	LDX #$00
 MoveDownLoop:
 	LDA $0200, x ; get sprite 1 y pos
@@ -77,14 +83,9 @@ MoveDownLoop:
 	INX
 	CPX #$10
 	BNE MoveDownLoop
+	RTS
 
-ReadDownDone:
-
-ReadLeft:
-	LDA $4016
-	AND #%00000001
-	BEQ ReadLeftDone
-
+PlayerLeftPressed:
 	LDX #$00
 MoveLeftLoop:
 	; first flip sprite horizontally
@@ -103,14 +104,9 @@ MoveLeftLoop:
 	INX
 	CPX #$10
 	BNE MoveLeftLoop
+	RTS
 
-ReadLeftDone:
-
-ReadRight:
-	LDA $4016
-	AND #%00000001
-	BEQ ReadRightDone
-
+PlayerRightPressed:
 	LDX #$00
 MoveRightLoop:
 	LDA $0203, x     ; get sprite 1 x pos
@@ -131,5 +127,4 @@ DontFlip:
 	INX
 	CPX #$10
 	BNE MoveRightLoop
-
-ReadRightDone:
+	RTS
