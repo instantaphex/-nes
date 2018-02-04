@@ -1,3 +1,5 @@
+OAM_BUFFER = $200
+
 buttons1 .rs 1 ; conroller variable for player 1
 buttons2 .rs 1 ; conroller variable for player 1
 
@@ -9,6 +11,8 @@ player_y .rs 1
 
 player_speed_x .rs 1
 player_speed_y .rs 1
+
+player_curr_sprite .rs 2 ; pointer to players current sprite
 
 player_direction .rs 1 ; facing left or right (0 - right, 1 - left)
 

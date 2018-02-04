@@ -64,6 +64,7 @@ clrmem:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Infinite Loop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	JSR InitPlayer
 Forever:
   JMP Forever     ;jump back to Forever, infinite loop
 
@@ -74,9 +75,9 @@ NMI:
 	JSR DMACopy
 
 	JSR ReadController1
-	JSR ReadController1
-
+	JSR ReadController2
 	JSR UpdatePlayer 
+	JSR DrawPlayer
 
   RTI
 

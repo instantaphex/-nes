@@ -19,7 +19,7 @@ LoadPalettesLoop:
 LoadSprites:
 	LDX #$00			;init sentinel to 0
 LoadSpritesLoop:
-	LDA sprites, x
+	LDA player_right_meta, x
 	STA $200, x	;store into ram address ($200 + x)
 	INX						;x++
 	CPX #$10			;if (x != $04) 
