@@ -1,156 +1,130 @@
+PLAYER_FACING_RIGHT = 0
+PLAYER_FACING_LEFT = 1
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;	Set initial player values		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-InitPlayer:
+init_player:
 	; set position
-	LDA #$80
-	STA player_x
-	STA player_y
+	lda #$80
+	sta player_x
+	sta player_y
 
 	; set speed x and y
-	LDA #$00
-	STA player_speed_x
-	STA player_speed_y
+	lda #$01
+	sta player_speed_x
+	sta player_speed_y
 
 	; set direction
-	LDA #$00
-	STA player_direction
-	RTS
+	lda #PLAYER_FACING_RIGHT
+	sta player_direction
+	load_pointer player_curr_sprite, player_map
+	rts
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;	Timer Callback
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+player_timer_callback:
+	;load_pointer player_curr_sprite, player1
+	rts
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Macro to point a pointer to an address
-;
-; usage:
-;		LoadPointer pointer, address
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LoadPointer .macro
-	LDA #LOW(\2)
-	STA \1 + 0
-	LDA #HIGH(\2)
-	STA \1 + 1
-	.endm
-
-
-LoadCurrentPlayerSprite:
-	LDX #$00
-loadPlayerOamBuffLoop:
-	LDA player_curr_sprite, x
-	STA OAM_BUFFER, x
-	INX
-	CPX #$10
-	BNE loadPlayerOamBuffLoop
-	RTS
-	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;	Draw Player
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.proc draw_player
+	; set up pointer to current animation frame
+	;load_pointer player_curr_sprite, player_map
+	;jsr load_current_player_sprite
+	load_pointer sprite_addr, player_map
+	lda player_x
+	sta sprite_x
+	lda player_y
+	sta sprite_y
+	lda player_direction
+	sta sprite_direction
+	lda #$00
+	sta sprite_id
+	jsr draw_metasprite
+	rts
+.endproc
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Draw players current sprite
-;
-; usage:
-;		LoadPointer player_curr_sprite, player_right_meta
-;   JSR DrawMetaSprite
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-DrawMetaSprite:
-	JSR LoadCurrentPlayerSprite
+; Handle input for player
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+update_player:
+	lda buttons1
+	and #%10000000
+	bne player_a_pressed 
 
-	; set y position
-	LDA player_y
-	STA OAM_BUFFER + 8
-	STA OAM_BUFFER + 12 
-	CLC
-	ADC #$08
-	STA OAM_BUFFER
-	STA OAM_BUFFER + 4
-
-	; set x position
-	LDA player_x
-	STA OAM_BUFFER + 7
-	STA OAM_BUFFER + 15
-	CLC
-	ADC #$08
-	STA OAM_BUFFER + 3
-	STA OAM_BUFFER + 11 
-	RTS
-
-DrawPlayer:
-	LDA player_direction
-	CMP #$01
-	BEQ DrawPlayerLeft
-
-DrawPlayerRight:
-	LoadPointer player_curr_sprite, player_right_meta
-	JSR DrawMetaSprite
-	JMP DrawPlayerDone
-
-DrawPlayerLeft:
-	LoadPointer player_curr_sprite, player_left_meta
-	JSR DrawMetaSprite
-DrawPlayerDone:
-	RTS
-
-UpdatePlayer:
-	LDA buttons1
-	AND #%10000000
-	BNE PlayerAPressed
-
-	LDA buttons1
-	AND #%01000000
-	BNE PlayerBPressed
+	lda buttons1
+	and #%01000000
+	bne player_b_pressed 
 	
-	LDA buttons1
-	AND #%00100000
-	BNE PlayerStartPressed
+	lda buttons1
+	and #%00100000
+	bne player_start_pressed 
 
-	LDA buttons1
-	AND #%00010000
-	BNE PlayerSelectPressed
+	lda buttons1
+	and #%00010000
+	bne player_select_pressed 
 
-	LDA buttons1
-	AND #%00001000
-	BNE PlayerUpPressed
+	lda buttons1
+	and #%00001000
+	bne player_up_pressed 
 
-	LDA buttons1
-	AND #%00000100
-	BNE PlayerDownPressed
+	lda buttons1
+	and #%00000100
+	bne player_down_pressed 
 
-	LDA buttons1
-	AND #%00000010
-	BNE PlayerLeftPressed
+	lda buttons1
+	and #%00000010
+	bne player_left_pressed 
 
-	LDA buttons1
-	AND #%00000001
-	BNE PlayerRightPressed
+	lda buttons1
+	and #%00000001
+	bne player_right_pressed 
 
-	RTS	
+	rts	
 
-PlayerAPressed:
-	RTS
+player_a_pressed:
+	rts	
 
-PlayerBPressed:
-	RTS
+player_b_pressed:
+	rts
 
-PlayerStartPressed:
-	RTS
+player_start_pressed:
+	rts
 
-PlayerSelectPressed:
-	RTS
+player_select_pressed:
+	rts	
 
-PlayerUpPressed:
-	DEC player_y
-	RTS
+player_up_pressed:
+	lda player_y
+	sec
+	sbc player_speed_y
+	sta player_y
+	rts	
 
-PlayerDownPressed:
-	INC player_y
-	RTS
+player_down_pressed:
+	lda player_y
+	clc
+	adc player_speed_y
+	sta player_y
+	rts	
 
-PlayerLeftPressed:
-	LDA #$01
-	STA player_direction
-	DEC player_x
-	RTS
+player_left_pressed:
+	lda #PLAYER_FACING_LEFT
+	sta player_direction
+	lda player_x
+	sec
+	sbc player_speed_x
+	sta player_x
+	rts	
 
-PlayerRightPressed:
-	LDA #$00
-	STA player_direction
-	INC player_x
-	RTS
+player_right_pressed:
+	lda #PLAYER_FACING_RIGHT
+	sta player_direction
+	lda player_x
+	clc
+	adc player_speed_x
+	sta player_x
+	rts	

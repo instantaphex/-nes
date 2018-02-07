@@ -1,29 +1,29 @@
-ReadController1:
+read_controller_1:
 	; latch buttons player 1
-  LDA #$01
-	STA $4016
-  LDA #$00
-	STA $4016
-	LDX #$08
-ReadController1Loop:
-	LDA $4016
-	LSR A			   ; Put controller pressed bool in carry
-	ROL buttons1 ; put carry into buttons1
-	DEX					 ; x -= 1
-	BNE ReadController1Loop  ; DEX will set zero flag if the count down is complete.  BNE will check zero flag
-	RTS
+  lda #$01
+	sta $4016
+  lda #$00
+	sta $4016
+	ldx #$08
+@loop:
+	lda $4016
+	lsr A			   ; Put controller pressed bool in carry
+	rol buttons1 ; put carry into buttons1
+	dex ; x -= 1
+	bne @loop; DEX will set zero flag if the count down is complete.  BNE will check zero flag
+	rts	
 
-ReadController2:
+read_controller_2:
 	; latch buttons player 1
-  LDA #$01
-	STA $4017
-  LDA #$00
-	STA $4017
-	LDX #$08
-ReadController2Loop:
-	LDA $4017
-	LSR A			   ; Put controller pressed bool in carry
-	ROL buttons2 ; put carry into buttons2
-	DEX					 ; x -= 1
-	BNE ReadController2Loop  ; DEX will set zero flag if the count down is complete.  BNE will check zero flag
-	RTS
+  lda #$01
+	sta $4017
+  lda #$00
+	sta $4017
+	ldx #$08
+@loop:
+	lda $4017
+	lsr A			   ; Put controller pressed bool in carry
+	rol buttons2 ; put carry into buttons2
+	dex ; x -= 1
+	bne @loop ; DEX will set zero flag if the count down is complete.  BNE will check zero flag
+	rts

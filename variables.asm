@@ -1,18 +1,38 @@
-OAM_BUFFER = $200
+tmp1: .res 1
+tmp2: .res 1
+tmp3: .res 1
 
-buttons1 .rs 1 ; conroller variable for player 1
-buttons2 .rs 1 ; conroller variable for player 1
+;sprite struct
+sprite_addr: .res 2 ; general purpose metasprite pointer
+sprite_direction: .res 1 ; flag to determine if sprite_addr should be flipped
+sprite_x: .res 1
+sprite_y: .res 1
+sprite_id: .res 1
 
-bg_ptr_low .rs 1 ; bg pointer low byte
-bg_ptr_hi .rs 1 ; bg pointer high byte
+frame_counter: .res 1 ; frame counter
+buttons1: .res 1 ; conroller variable for player 1
+buttons2: .res 1 ; conroller variable for player 1
 
-player_x .rs 1
-player_y .rs 1
+bg_ptr_low: .res 1 ; bg pointer low byte
+bg_ptr_hi: .res 1 ; bg pointer high byte
 
-player_speed_x .rs 1
-player_speed_y .rs 1
+player_x: .res 1
+player_y: .res 1
 
-player_curr_sprite .rs 2 ; pointer to players current sprite
+player_speed_x: .res 1
+player_speed_y: .res 1
 
-player_direction .rs 1 ; facing left or right (0 - right, 1 - left)
+player_curr_sprite: .res 2 ; pointer to players current sprite
 
+player_direction: .res 1 ; facing left or right (0 - right, 1 - left)
+
+;.struct player 
+;		x .byte
+;    y .byte
+;    speed_x .byte
+;    speed_y .byte
+;    frame .word
+;    direction .byte
+;.endstruct
+
+;the_player: .tag player
