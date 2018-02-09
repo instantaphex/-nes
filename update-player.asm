@@ -32,8 +32,6 @@ player_timer_callback:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .proc draw_player
 	; set up pointer to current animation frame
-	;load_pointer player_curr_sprite, player_map
-	;jsr load_current_player_sprite
 	load_pointer sprite_addr, player_map
 	lda player_x
 	sta sprite_x

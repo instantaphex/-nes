@@ -9,6 +9,8 @@ sprite_x: .res 1
 sprite_y: .res 1
 sprite_id: .res 1
 
+oam_offset: .res 2 ; offset for sprite id
+
 frame_counter: .res 1 ; frame counter
 buttons1: .res 1 ; conroller variable for player 1
 buttons2: .res 1 ; conroller variable for player 1
