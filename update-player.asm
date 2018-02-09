@@ -32,16 +32,17 @@ player_timer_callback:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .proc draw_player
 	; set up pointer to current animation frame
-	load_pointer sprite_addr, player_map
-	lda player_x
-	sta sprite_x
-	lda player_y
-	sta sprite_y
-	lda player_direction
-	sta sprite_direction
-	lda #$00
-	sta sprite_id
-	jsr draw_metasprite
+	;load_pointer sprite_addr, player_map
+	;lda player_x
+	;sta sprite_x
+	;lda player_y
+	;sta sprite_y
+	;lda player_direction
+	;sta sprite_direction
+	;lda #$02
+	;sta sprite_id
+	;jsr draw_metasprite
+	draw_2x2_metasprite player_map, player_x, player_y, player_direction, #$01
 	rts
 .endproc
 
