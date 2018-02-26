@@ -18,38 +18,30 @@ init_player:
 	; set direction
 	lda #PLAYER_FACING_RIGHT
 	sta player_direction
-	load_pointer player_curr_sprite, player_map
+	load_pointer player_curr_sprite, player_walking_1
+	lda #$00
+	sta player_animation_counter
 	rts
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;	Timer Callback
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-player_timer_callback:
-	;load_pointer player_curr_sprite, player1
+.proc player_timer_callback
+	play_animation player_walk_animation, player_animation_counter, player_curr_sprite
 	rts
+.endproc
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;	Draw Player
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .proc draw_player
-	; set up pointer to current animation frame
-	;load_pointer sprite_addr, player_map
-	;lda player_x
-	;sta sprite_x
-	;lda player_y
-	;sta sprite_y
-	;lda player_direction
-	;sta sprite_direction
-	;lda #$02
-	;sta sprite_id
-	;jsr draw_metasprite
-	draw_2x2_metasprite player_map, player_x, player_y, player_direction, #$01
+	draw_2x2_metasprite player_curr_sprite, player_x, player_y, player_direction, #$01
 	rts
 .endproc
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Handle input for player
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-update_player:
+.proc update_player
 	lda buttons1
 	and #%10000000
 	bne player_a_pressed 
@@ -83,34 +75,41 @@ update_player:
 	bne player_right_pressed 
 
 	rts	
+.endproc
 
-player_a_pressed:
+.proc player_a_pressed
 	rts	
+.endproc
 
-player_b_pressed:
+.proc player_b_pressed
 	rts
+.endproc
 
-player_start_pressed:
+.proc player_start_pressed
 	rts
+.endproc
 
-player_select_pressed:
+.proc player_select_pressed
 	rts	
+.endproc
 
-player_up_pressed:
+.proc player_up_pressed
 	lda player_y
 	sec
 	sbc player_speed_y
 	sta player_y
 	rts	
+.endproc
 
-player_down_pressed:
+.proc player_down_pressed
 	lda player_y
 	clc
 	adc player_speed_y
 	sta player_y
 	rts	
+.endproc
 
-player_left_pressed:
+.proc player_left_pressed
 	lda #PLAYER_FACING_LEFT
 	sta player_direction
 	lda player_x
@@ -118,8 +117,9 @@ player_left_pressed:
 	sbc player_speed_x
 	sta player_x
 	rts	
+.endproc
 
-player_right_pressed:
+.proc player_right_pressed
 	lda #PLAYER_FACING_RIGHT
 	sta player_direction
 	lda player_x
@@ -127,3 +127,4 @@ player_right_pressed:
 	adc player_speed_x
 	sta player_x
 	rts	
+.endproc

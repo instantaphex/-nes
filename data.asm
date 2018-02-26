@@ -112,23 +112,33 @@ palette:
   .byte $22,$29,$1A,$0F,  $22,$36,$17,$0F,  $22,$30,$21,$0F,  $22,$27,$17,$0F   ;;background palette
   .byte $22,$1C,$15,$14,  $22,$02,$38,$3C,  $22,$1C,$15,$14,  $22,$02,$38,$3C   ;;sprite palette
 
-player1:
-  .byte $80, $32, $00, $80   ;sprite 0
-  .byte $80, $33, $00, $88   ;sprite 1
-  .byte $88, $34, $00, $80   ;sprite 2
-  .byte $88, $35, $00, $88   ;sprite 3
-	
-player2:
-	.byte $88,$32,%01000000,$80
-	.byte $88,$33,%01000000,$88
-	.byte $80,$34,%01000000,$80
-	.byte $80,$35,%01000000,$88
-
-player_map:
+player_walking_1:
 	.byte $00,$32,%00000000,$00
 	.byte $00,$33,%00000000,$08
 	.byte $08,$34,%00000000,$00
 	.byte $08,$35,%00000000,$08
+
+player_walking_2:
+	.byte $00,$36,%00000000,$00
+	.byte $00,$37,%00000000,$08
+	.byte $08,$38,%00000000,$00
+	.byte $08,$39,%00000000,$08
+  
+player_walking_3:
+	.byte $00,$32,%00000000,$00
+	.byte $00,$33,%00000000,$08
+	.byte $08,$34,%00000000,$00
+	.byte $08,$35,%00000000,$08
+
+player_walking_4:
+	.byte $00,$3a,%00000000,$00
+	.byte $00,$3b,%00000000,$08
+	.byte $08,$3c,%00000000,$00
+	.byte $08,$3d,%00000000,$08
+
+player_walk_animation:
+  .byte $06 ; number of frames
+  .word player_walking_1, player_walking_2, player_walking_3, player_walking_4
 
 sprite_id_constants:
   .byte $00, $10, $20, $30, $40, $50, $60, $70

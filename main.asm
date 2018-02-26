@@ -87,11 +87,10 @@ reset:
 	sta $2005
 
   ; initialize frame counter
-  lda #$30
+  lda #$10
   sta frame_counter
 
 	jsr load_palettes
-	jsr load_sprites
 	jsr load_background
 	jsr init_player
 
@@ -114,13 +113,13 @@ nmi:
   
   ; increase frame counter
   dec frame_counter
-  bne reset_counter
-  jmp :+
+  beq reset_counter
+  jmp frame_counter_done
 reset_counter:
 	jsr player_timer_callback
-  lda #$30
+  lda #$10
   sta frame_counter
-  :
+frame_counter_done:
 
   jsr read_controller_1
   jsr update_player
@@ -135,6 +134,7 @@ irq:
 main:
   jmp main
 
+.include "animation.asm"
 .include "metasprite.asm"
 .include "macros.asm"
 .include "subroutines.asm"

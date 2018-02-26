@@ -3,7 +3,9 @@ RIGHT = 0
 
 .macro draw_2x2_metasprite sprite_frame, the_x, the_y, direction, id
 	; set up pointer to current animation frame
-	load_pointer sprite_addr, sprite_frame
+	;load_pointer_from_ptr sprite_addr, sprite_frame
+	;load_pointer sprite_addr, sprite_frame
+	load_pointer_from_ptr sprite_addr, sprite_frame
 	lda the_x
 	sta sprite_x
 	lda the_y

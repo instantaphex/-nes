@@ -16,15 +16,15 @@ load_palettes:
   bne :- ;if x = $20, 32 bytes copied, all done
 	rts	
 
-load_sprites:
-	ldx #$00			;init sentinel to 0
-:
-	lda player1, x
-	sta oam, x	;store into ram address ($200 + x)
-	inx ;x++
-	cpx #$10			
-	bne :- 
-	rts	
+;load_sprites:
+;	ldx #$00			;init sentinel to 0
+;:
+;	lda player_walking_1, x
+;	sta oam, x	;store into ram address ($200 + x)
+;	inx ;x++
+;	cpx #$10			
+;	bne :- 
+;	rts	
 
 load_background:
 	lda $2002				; reset high/low latch

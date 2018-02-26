@@ -1,6 +1,4 @@
-tmp1: .res 1
-tmp2: .res 1
-tmp3: .res 1
+temp1: .res 1 ; gen pop local
 
 ;sprite struct
 sprite_addr: .res 2 ; general purpose metasprite pointer
@@ -25,8 +23,8 @@ player_speed_x: .res 1
 player_speed_y: .res 1
 
 player_curr_sprite: .res 2 ; pointer to players current sprite
-
 player_direction: .res 1 ; facing left or right (0 - right, 1 - left)
+player_animation_counter: .res 1 ; index for animation frame
 
 ;.struct player 
 ;		x .byte
