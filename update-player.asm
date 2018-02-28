@@ -1,5 +1,6 @@
 PLAYER_FACING_RIGHT = 0
 PLAYER_FACING_LEFT = 1
+ANIMATION_START = $FF
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;	Set initial player values		
@@ -19,7 +20,7 @@ init_player:
 	lda #PLAYER_FACING_RIGHT
 	sta player_direction
 	load_pointer player_curr_sprite, player_walking_1
-	lda #$00
+	lda #ANIMATION_START
 	sta player_animation_counter
 	rts
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,30 +1,24 @@
 .macro play_animation animation, counter, sprite_ptr
     ; load sprite frame counter
-	ldx counter
-    ; increase x to put offset at the begginning of frame data
-    inx
+	lda counter
+    ; advance frame (initially $ff and rolls over to 0)
+    clc
+    adc #1
+    ; if (current_frame == num frames) { reset() }
+    cmp player_walk_num_frames
+    bcc skip_reset
+    lda #0
+skip_reset:
+    ; store frame + 1
+    sta counter
+    ; multiply a by 2 in order to get correct byte offset
+    asl a
+    ; transfer a to x for Absolute,X addressing mode
+    tax
 	; set current sprite to current animation frame
 	lda animation, x
 	sta sprite_ptr + 0
 	inx 
 	lda animation, x
 	sta sprite_ptr + 1
-
-    ; get number of frames and store it in temp1
-    lda animation
-    sta temp1
-
-    ; check if frame counter is equal to number of frames
-	ldx counter
-	cpx temp1
-	beq reset_counter
-	; advance frame counter if counter < number of frames
-	inx
-	inx
-	stx counter
-	jmp callback_done
-reset_counter:
-	lda #$00
-	sta counter
-callback_done:
 .endmacro

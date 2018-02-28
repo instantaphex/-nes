@@ -136,8 +136,10 @@ player_walking_4:
 	.byte $08,$3c,%00000000,$00
 	.byte $08,$3d,%00000000,$08
 
+player_walk_num_frames:
+  .byte $04
+
 player_walk_animation:
-  .byte $06 ; number of frames
   .word player_walking_1, player_walking_2, player_walking_3, player_walking_4
 
 sprite_id_constants:
